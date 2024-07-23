@@ -56,16 +56,13 @@ class PdfExtractor(BaseExtractor):
 
     def parse(self, blob: Blob) -> Iterator[Document]:
         """Lazily parse the blob."""
-        import pypdfium2
+        import pymupdf
 
         with blob.as_bytes_io() as file_path:
-            pdf_reader = pypdfium2.PdfDocument(file_path, autoclose=True)
+            pdf_reader = pymupdf.open(file_path)
             try:
                 for page_number, page in enumerate(pdf_reader):
-                    text_page = page.get_textpage()
-                    content = text_page.get_text_range()
-                    text_page.close()
-                    page.close()
+                    content = page.get_text()
                     metadata = {"source": blob.source, "page": page_number}
                     yield Document(page_content=content, metadata=metadata)
             finally:

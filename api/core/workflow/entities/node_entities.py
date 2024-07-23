@@ -48,6 +48,7 @@ class SystemVariable(Enum):
     """
     QUERY = 'query'
     FILES = 'files'
+    FILES_STR = 'files_str'
     CONVERSATION_ID = 'conversation_id'
     USER_ID = 'user_id'
 

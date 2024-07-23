@@ -32,6 +32,32 @@ class ImagePreviewApi(Resource):
 
         return Response(generator, mimetype=mimetype)
     
+class filePreviewApi(Resource):
+    def get(self, file_id):
+        file_id = str(file_id)
+        try:
+            generator,mimetype = FileService.get_file_preview_full(
+                file_id,
+            )
+        except services.errors.file.UnsupportedFileTypeError:
+            raise UnsupportedFileTypeError()
+
+        return Response(generator,mimetype=mimetype)
+
+class fileImagePreviewApi(Resource):
+    def get(self, file_id):
+        file_id = str(file_id)
+        page = int(request.args.get('page'))
+        try:
+            generator,mimetype = FileService.get_file_image_preview(
+                file_id,
+                page
+            )
+            
+        except services.errors.file.UnsupportedFileTypeError:
+            raise UnsupportedFileTypeError()
+
+        return Response(generator,mimetype=mimetype)
 
 class WorkspaceWebappLogoApi(Resource):
     def get(self, workspace_id):
@@ -54,6 +80,8 @@ class WorkspaceWebappLogoApi(Resource):
 
 
 api.add_resource(ImagePreviewApi, '/files/<uuid:file_id>/image-preview')
+api.add_resource(filePreviewApi, '/files/<uuid:file_id>/file-preview')
+api.add_resource(fileImagePreviewApi, '/files/<string:file_id>/file-image-preview')
 api.add_resource(WorkspaceWebappLogoApi, '/files/workspaces/<uuid:workspace_id>/webapp-logo')
 
 

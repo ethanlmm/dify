@@ -823,7 +823,11 @@ class Message(db.Model):
                         extension = '.bin'
                     # add sign url
                     url = ToolFileParser.get_tool_file_manager().sign_file(tool_file_id=tool_file_id, extension=extension)
-
+            if message_file.type =='file':
+                upload_file = (db.session.query(UploadFile).filter(UploadFile.id == message_file.upload_file_id).first())
+                url = UploadFileParser.get_file_data(
+                    upload_file=upload_file,
+                )
             files.append({
                 'id': message_file.id,
                 'type': message_file.type,

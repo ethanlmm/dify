@@ -123,7 +123,7 @@ class Dataset(db.Model):
                 'reranking_provider_name': '',
                 'reranking_model_name': ''
             },
-            'top_k': 2,
+            'top_k': 20,
             'score_threshold_enabled': False
         }
         return self.retrieval_model if self.retrieval_model else default_retrieval_model

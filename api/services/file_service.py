@@ -16,7 +16,7 @@ from extensions.ext_storage import storage
 from models.account import Account
 from models.model import EndUser, UploadFile
 from services.errors.file import FileTooLargeError, UnsupportedFileTypeError
-
+import pymupdf
 IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg']
 IMAGE_EXTENSIONS.extend([ext.upper() for ext in IMAGE_EXTENSIONS])
 
@@ -59,7 +59,7 @@ class FileService:
             raise FileTooLargeError(message)
 
         # user uuid as file name
-        file_uuid = str(uuid.uuid4())
+        file_uuid = str(hashlib.sha3_256(file_content).hexdigest())
 
         if isinstance(user, Account):
             current_tenant_id = user.current_tenant_id
@@ -147,6 +147,49 @@ class FileService:
         return text
 
     @staticmethod
+    def get_file_preview_full(file_id: str,stream=True) -> str:
+        if len(file_id)==36:
+            upload_file = db.session.query(UploadFile) \
+                .filter(UploadFile.id == file_id) \
+                .first()
+        else:
+            upload_file = db.session.query(UploadFile) \
+                .filter(UploadFile.hash== file_id) \
+                .first()
+        if not upload_file:
+            raise NotFound("File not found")
+
+        # extract text from file
+        extension = upload_file.extension
+        if extension.lower() not in UNSTRUCTURED_ALLOWED_EXTENSIONS:
+            raise UnsupportedFileTypeError()
+
+        generator = storage.load(upload_file.key, stream=stream)
+
+        return generator, upload_file.mime_type
+
+    @staticmethod
+    def get_file_image_preview(file_id: str,page: int) -> str:
+        print(file_id)
+        if len(file_id)==36:
+            upload_file = db.session.query(UploadFile) \
+                .filter(UploadFile.id == file_id) \
+                .first()
+        else:
+            upload_file = db.session.query(UploadFile) \
+                .filter(UploadFile.hash == file_id) \
+                .first()
+        if not upload_file:
+            raise NotFound("File not found")
+        # extract text from file
+        generator = storage.load(upload_file.key, stream=False)
+        
+        doc=pymupdf.Document(stream=generator)
+        pix=doc[page].get_pixmap(dpi=200)
+        img=pix.pil_tobytes("PNG")
+        return img, 'image/png'
+
+    @staticmethod
     def get_image_preview(file_id: str, timestamp: str, nonce: str, sign: str) -> tuple[Generator, str]:
         result = UploadFileParser.verify_image_file_signature(file_id, timestamp, nonce, sign)
         if not result:
@@ -155,7 +198,10 @@ class FileService:
         upload_file = db.session.query(UploadFile) \
             .filter(UploadFile.id == file_id) \
             .first()
-
+        if not upload_file:
+            upload_file = db.session.query(UploadFile) \
+                .filter(UploadFile.hash == file_id) \
+                .first()
         if not upload_file:
             raise NotFound("File not found or signature is invalid")
 

@@ -108,6 +108,10 @@ const formatItem = (
         variable: 'sys.files',
         type: VarType.arrayFile,
       })
+      res.vars.push({
+        variable: 'sys.files_str',
+        type: VarType.string,
+      })
       break
     }
 

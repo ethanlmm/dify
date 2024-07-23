@@ -7,7 +7,7 @@ from typing_extensions import deprecated
 from core.app.segments import Variable, factory
 from core.file.file_obj import FileVar
 from core.workflow.entities.node_entities import SystemVariable
-
+import json
 VariableValue = Union[str, int, float, dict, list, FileVar]
 
 

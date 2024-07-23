@@ -46,7 +46,8 @@ class Storage:
             self.storage_runner = LocalStorage(app=app)
 
     def save(self, filename, data):
-        self.storage_runner.save(filename, data)
+        if not self.exists(filename=filename):
+            self.storage_runner.save(filename, data)
 
     def load(self, filename: str, stream: bool = False) -> Union[bytes, Generator]:
         if stream:

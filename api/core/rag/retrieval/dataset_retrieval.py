@@ -34,7 +34,7 @@ default_retrieval_model = {
         'reranking_provider_name': '',
         'reranking_model_name': ''
     },
-    'top_k': 2,
+    'top_k': 20,
     'score_threshold_enabled': False
 }
 
@@ -470,7 +470,7 @@ class DatasetRetrieval:
                     'reranking_provider_name': '',
                     'reranking_model_name': ''
                 },
-                'top_k': 2,
+                'top_k': 20,
                 'score_threshold_enabled': False
             }
 

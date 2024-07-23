@@ -12,7 +12,9 @@ from extensions.ext_storage import storage
 
 IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg']
 IMAGE_EXTENSIONS.extend([ext.upper() for ext in IMAGE_EXTENSIONS])
-
+ALLOWED_EXTENSIONS = ['txt', 'markdown', 'md', 'pdf', 'html', 'htm', 'xlsx', 'xls', 'docx', 'csv']
+UNSTRUCTURED_ALLOWED_EXTENSIONS = ['txt', 'markdown', 'md', 'pdf', 'html', 'htm', 'xlsx', 'xls',
+                                   'docx', 'csv', 'eml', 'msg', 'pptx', 'ppt', 'xml', 'epub']
 
 class UploadFileParser:
     @classmethod
@@ -35,7 +37,26 @@ class UploadFileParser:
 
             encoded_string = base64.b64encode(data).decode('utf-8')
             return f'data:{upload_file.mime_type};base64,{encoded_string}'
+            
+    @classmethod
+    def get_file_data(cls, upload_file) -> Optional[str]:
+        if not upload_file:
+            return None
+        if upload_file.extension in UNSTRUCTURED_ALLOWED_EXTENSIONS:
+            return cls.get_temp_file_url(upload_file.id)
+        return None
 
+    @classmethod
+    def get_temp_file_url(cls, upload_file_id) -> str:
+        """
+        get signed url from upload file
+        :param upload_file: UploadFile object
+        :return:
+        """
+        base_url = current_app.config.get('FILES_URL')
+        file_preview_url = f'{base_url}/files/{upload_file_id}/file-preview'
+        return f"{file_preview_url}"
+        
     @classmethod
     def get_signed_temp_image_url(cls, upload_file_id) -> str:
         """

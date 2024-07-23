@@ -13,7 +13,7 @@ from models.model import UploadFile
 
 class FileType(enum.Enum):
     IMAGE = 'image'
-
+    FILE  = 'file'
     @staticmethod
     def value_of(value):
         for member in FileType:
@@ -132,5 +132,16 @@ class FileVar(BaseModel):
                 extension = self.extension
                 # add sign url
                 return ToolFileParser.get_tool_file_manager().sign_file(tool_file_id=self.related_id, extension=extension)
-
+        if self.type==FileType.FILE:
+            if self.transfer_method == FileTransferMethod.REMOTE_URL:
+                return self.url
+            elif self.transfer_method == FileTransferMethod.LOCAL_FILE:
+                upload_file = (db.session.query(UploadFile)
+                               .filter(
+                    UploadFile.id == self.related_id,
+                    UploadFile.tenant_id == self.tenant_id
+                ).first())
+                return UploadFileParser.get_file_data(
+                    upload_file=upload_file,
+                )
         return None
