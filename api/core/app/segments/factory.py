@@ -58,6 +58,8 @@ def build_anonymous_variable(value: Any, /) -> Variable:
         return ArrayVariable(name='anonymous', value=elements)
     if isinstance(value, FileVar):
         return FileVariable(name='anonymous', value=value)
+    if isinstance(value,Variable):
+        return value
     raise ValueError(f'not supported value {value}')
 
 

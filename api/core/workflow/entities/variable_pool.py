@@ -66,20 +66,18 @@ class VariablePool:
 
         if value is None:
             return
+        hash_key = hash(tuple(selector[1:]))
 
+        if selector[0]==SYSTEM_VARIABLE_NODE_ID and hash_key==hash(tuple(['files_extend'])):
+            hash_key=hash(tuple(['files']))
+            value=self._variable_dictionary[selector[0]][hash_key].value+value
         if not isinstance(value, Variable):
             v = factory.build_anonymous_variable(value)
         else:
             v = value
-
-        hash_key = hash(tuple(selector[1:]))
-        if hash_key==hash(tuple(['files'])):
-            self.add((SYSTEM_VARIABLE_NODE_ID,'files_str'),json.dumps([v.to_dict()for v in value]))
-        if hash_key==hash(tuple(['files_extend'])):
-            hash_key=hash(tuple(['files']))
-            self._variable_dictionary[selector[0]][hash_key].extend(value)
-            self.add((SYSTEM_VARIABLE_NODE_ID, 'files_str'),json.dumps([v.to_dict() for v in self._variable_dictionary[SYSTEM_VARIABLE_NODE_ID][hash_key]]))
-            return
+        if selector[0]==SYSTEM_VARIABLE_NODE_ID and hash_key==hash(tuple(['files'])):
+            s=json.dumps([val.value.to_dict()for val in v.value])
+            self.add((SYSTEM_VARIABLE_NODE_ID,'files_str'),s)
         self._variable_dictionary[selector[0]][hash_key] = v
 
     def get(self, selector: Sequence[str], /) -> Variable | None:

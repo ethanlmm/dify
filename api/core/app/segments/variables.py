@@ -67,8 +67,7 @@ class ArrayVariable(Variable):
 
 class FileVariable(Variable):
     value_type: SegmentType = SegmentType.FILE
-    # TODO: embed FileVar in this model.
-    value: FileVar
+    # TODO: embed FileVar in this mod. 
 
     @property
     def markdown(self) -> str:

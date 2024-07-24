@@ -88,7 +88,7 @@ const formatItem = (
           isSelect: v.type === InputVarType.select,
           options: v.options,
           required: v.required,
-        }
+        }.  
       })
       if (isChatMode) {
         res.vars.push({

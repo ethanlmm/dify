@@ -8,7 +8,7 @@ from core.file.file_obj import FileBelongsTo, FileTransferMethod, FileType, File
 from extensions.ext_database import db
 from models.account import Account
 from models.model import EndUser, MessageFile, UploadFile
-from services.file_service import IMAGE_EXTENSIONS
+from services.file_service import IMAGE_EXTENSIONS,ALLOWED_EXTENSIONS
 
 
 class MessageFileParser:
