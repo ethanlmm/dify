@@ -62,7 +62,7 @@ class PdfExtractor(BaseExtractor):
             pdf_reader = pymupdf.open(file_path)
             try:
                 for page_number, page in enumerate(pdf_reader):
-                    content = page.get_text()
+                    content = f'<page={page_number+1}>'+page.get_text()
                     metadata = {"source": blob.source, "page": page_number}
                     yield Document(page_content=content, metadata=metadata)
             finally:

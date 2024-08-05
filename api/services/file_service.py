@@ -185,7 +185,7 @@ class FileService:
         generator = storage.load(upload_file.key, stream=False)
         
         doc=pymupdf.Document(stream=generator)
-        pix=doc[page].get_pixmap(dpi=200)
+        pix=doc[page-1].get_pixmap(dpi=200)
         img=pix.pil_tobytes("PNG")
         return img, 'image/png'
 

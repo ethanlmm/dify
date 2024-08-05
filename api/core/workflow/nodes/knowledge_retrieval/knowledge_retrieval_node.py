@@ -22,7 +22,7 @@ from models.dataset import Dataset, Document, DocumentSegment
 from models.workflow import WorkflowNodeExecutionStatus
 import re
 default_retrieval_model = {
-    'search_method': RetrievalMethod.SEMANTIC_SEARCH.value,
+    'search_method': RetrievalMethod.FULL_TEXT_SEARCH.value,
     'reranking_enable': False,
     'reranking_model': {
         'reranking_provider_name': '',

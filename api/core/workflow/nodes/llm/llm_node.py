@@ -8,7 +8,7 @@ from core.app.entities.queue_entities import QueueRetrieverResourcesEvent
 from core.entities.model_entities import ModelStatus
 from core.entities.provider_entities import QuotaUnit
 from core.errors.error import ModelCurrentlyNotSupportError, ProviderTokenNotInitError, QuotaExceededError
-from core.file.file_obj import FileVar
+from core.file.file_obj import FileVar,FileType
 from core.memory.token_buffer_memory import TokenBufferMemory
 from core.model_manager import ModelInstance, ModelManager
 from core.model_runtime.entities.llm_entities import LLMUsage
@@ -71,7 +71,7 @@ class LLMNode(BaseNode):
 
             # fetch files
             files: list[FileVar] = self._fetch_files(node_data, variable_pool)
-
+            files=list(filter(lambda x:x.type==FileType.IMAGE,files))
             if files:
                 node_inputs['#files#'] = [file.to_dict() for file in files]
 

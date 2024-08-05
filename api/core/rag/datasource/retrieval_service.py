@@ -11,7 +11,7 @@ from extensions.ext_database import db
 from models.dataset import Dataset
 
 default_retrieval_model = {
-    'search_method': RetrievalMethod.SEMANTIC_SEARCH.value,
+    'search_method': RetrievalMethod.FULL_TEXT_SEARCH.value,
     'reranking_enable': False,
     'reranking_model': {
         'reranking_provider_name': '',

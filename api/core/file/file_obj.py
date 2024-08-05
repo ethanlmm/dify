@@ -105,8 +105,11 @@ class FileVar(BaseModel):
     @property
     def prompt_message_content(self) -> ImagePromptMessageContent:
         if self.type == FileType.IMAGE:
-            image_config = self.extra_config.image_config
-
+            if hasattr(self.extra_config, 'property'):
+                image_config = self.extra_config.image_config
+            else:
+                image_config={'detail':'high'}
+            
             return ImagePromptMessageContent(
                 data=self.data,
                 detail=ImagePromptMessageContent.DETAIL.HIGH
