@@ -80,7 +80,7 @@ class WorkspaceWebappLogoApi(Resource):
 
 
 api.add_resource(ImagePreviewApi, '/files/<uuid:file_id>/image-preview')
-api.add_resource(filePreviewApi, '/files/<uuid:file_id>/file-preview')
+api.add_resource(filePreviewApi, '/files/<string:file_id>/file-preview')
 api.add_resource(fileImagePreviewApi, '/files/<string:file_id>/file-image-preview')
 api.add_resource(WorkspaceWebappLogoApi, '/files/workspaces/<uuid:workspace_id>/webapp-logo')
 
