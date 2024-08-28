@@ -45,9 +45,10 @@ class MessageFileParser:
                 raise ValueError('Missing file upload_file_id')
             if file.get('transform_method') == FileTransferMethod.TOOL_FILE.value and not file.get('tool_file_id'):
                 raise ValueError('Missing file tool_file_id')
-            f_object=db.session.query(UploadFile).filter(UploadFile.id == file.get('upload_file_id','abc')).first()
-            if(f_object.extension in ALLOWED_EXTENSIONS):
-                file['type']='file'
+            if file.get('upload_file_id',"")!="":
+                f_object=db.session.query(UploadFile).filter(UploadFile.id == file['upload_file_id']).first()
+                if(f_object.extension in ALLOWED_EXTENSIONS):
+                    file['type']='file'
         # transform files to file objs
         type_file_objs = self._to_file_objs(files, file_extra_config)
 

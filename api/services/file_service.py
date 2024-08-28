@@ -169,27 +169,6 @@ class FileService:
         return generator, upload_file.mime_type
 
     @staticmethod
-    def get_file_image_preview(file_id: str,page: int) -> str:
-        print(file_id)
-        if len(file_id)==36:
-            upload_file = db.session.query(UploadFile) \
-                .filter(UploadFile.id == file_id) \
-                .first()
-        else:
-            upload_file = db.session.query(UploadFile) \
-                .filter(UploadFile.hash == file_id) \
-                .first()
-        if not upload_file:
-            raise NotFound("File not found")
-        # extract text from file
-        generator = storage.load(upload_file.key, stream=False)
-        
-        doc=pymupdf.Document(stream=generator)
-        pix=doc[page-1].get_pixmap(dpi=200)
-        img=pix.pil_tobytes("PNG")
-        return img, 'image/png'
-
-    @staticmethod
     def get_image_preview(file_id: str, timestamp: str, nonce: str, sign: str) -> tuple[Generator, str]:
         result = UploadFileParser.verify_image_file_signature(file_id, timestamp, nonce, sign)
         if not result:

@@ -78,7 +78,8 @@ class HttpRequestNode(BaseNode):
             )
 
         files = self.extract_files(http_executor.server_url, response)
-        variable_pool.add(('sys','files_extend'),files)
+        if files:
+            variable_pool.add(('sys','files_extend'),files)
         return NodeRunResult(
             status=WorkflowNodeExecutionStatus.SUCCEEDED,
             outputs={
